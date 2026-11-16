@@ -431,42 +431,50 @@ stopBtn.addEventListener('click',()=>{
   const key=new T.DirectionalLight(0xffffff,.95);key.position.set(.4,1,1.3);scene.add(key);
   const rim=new T.DirectionalLight(0xE6C89A,.55);rim.position.set(-1,-.4,.6);scene.add(rim);
 
-  const M=(c,o={})=>new T.MeshPhongMaterial(Object.assign({color:c,specular:0xE6C89A,shininess:90},o));
-  const emerald=M(0x0B7D6B), emeraldHi=M(0x15a487), dark=M(0x06473d),
-        aqua=M(0x3fd6e8,{specular:0xffffff,shininess:120}), pearl=M(0xF8F7F3,{specular:0xffffff}),
-        beakM=M(0x2a1f14,{shininess:30}), eyeM=M(0x050505,{specular:0xffffff,shininess:200}),
-        wingM=M(0xD4A84F,{specular:0xfff2cc,shininess:140,transparent:true,opacity:.9,side:T.DoubleSide});
+  const M=(c,o={})=>new T.MeshPhongMaterial(Object.assign({color:c,specular:0x3a4a1a,shininess:38},o));
+  const olive=M(0x667641,{specular:0x5a6630,shininess:40}), oliveD=M(0x5d6b37), oliveH=M(0x6c7c45,{specular:0x66733a,shininess:45}),
+        white=M(0xece9e0,{specular:0x222222,shininess:12}), throatM=M(0xf5f3ec,{specular:0x222222,shininess:10}),
+        beakM=M(0x141414,{specular:0x666666,shininess:60}), eyeM=M(0x050505,{specular:0xffffff,shininess:220}),
+        spotM=M(0xffffff,{shininess:5}), footM=M(0x2b2b2b,{shininess:10});
+  const wingMats=[.62,.28,.13].map(o=>new T.MeshPhongMaterial({color:0xa08a78,specular:0x332a22,shininess:12,transparent:true,opacity:o,side:T.DoubleSide,depthWrite:false}));
 
   const bird=new T.Group();      // موضع + اتجاه
   const body=new T.Group();      // ميلان الجسم
   bird.add(body);scene.add(bird);
 
-  const sph=(r,m,sx,sy,sz,x,y,z)=>{const g=new T.Mesh(new T.SphereGeometry(r,28,18),m);g.scale.set(sx,sy,sz);g.position.set(x,y,z);body.add(g);return g;};
-  sph(1,emerald,1.5,.68,.7,0,0,0);              // الجسم
-  sph(.55,pearl,1.3,.6,.75,.35,-.28,0);            // البطن
-  sph(.48,aqua,1.05,.75,.9,1.0,.05,0);              // الرقبة اللامعة
-  const head=new T.Group();head.position.set(1.3,.42,0);body.add(head);
-  const hm=new T.Mesh(new T.SphereGeometry(.56,28,18),emeraldHi);head.add(hm);
-  [.42,-.42].forEach(z=>{const e=new T.Mesh(new T.SphereGeometry(.12,12,10),eyeM);e.position.set(.28,.12,z*.85);head.add(e);});
-  const beak=new T.Mesh(new T.ConeGeometry(.075,1.7,10),beakM);beak.rotation.z=-Math.PI/2;beak.position.set(1.3,-.02,0);head.add(beak);
+  const sph=(r,m,sx,sy,sz,x,y,z,p=body)=>{const g=new T.Mesh(new T.SphereGeometry(r,32,20),m);g.scale.set(sx,sy,sz);g.position.set(x,y,z);p.add(g);return g;};
+  sph(1,olive,1.55,.6,.62,0,.04,0);               // الظهر والجسم الزيتوني
+  sph(.9,white,1.45,.52,.6,.15,-.16,0);           // البطن الأبيض
+  sph(.5,throatM,1.1,.72,.85,1.0,-.1,0);          // الرقبة البيضاء
+  const head=new T.Group();head.position.set(1.32,.3,0);body.add(head);
+  sph(.5,oliveH,1.08,.95,.95,0,.06,0,head);       // تاج الرأس
+  sph(.44,throatM,1.05,.8,.9,.08,-.12,0,head);    // أسفل الرأس
+  [1,-1].forEach(z=>{
+    const e=new T.Mesh(new T.SphereGeometry(.1,14,10),eyeM);e.position.set(.24,.12,.36*z);head.add(e);
+    const sp=new T.Mesh(new T.SphereGeometry(.045,8,6),spotM);sp.position.set(.05,.2,.41*z);head.add(sp);
+  });
+  const beak=new T.Mesh(new T.ConeGeometry(.055,2.1,10),beakM);beak.rotation.z=-Math.PI/2-.07;beak.position.set(1.45,-.08,0);head.add(beak);
 
-  // ذيل متشعب
-  const ts=new T.Shape();ts.moveTo(0,.12);ts.lineTo(-1.5,.5);ts.lineTo(-1.15,0);ts.lineTo(-1.5,-.5);ts.lineTo(0,-.12);
-  const tail=new T.Mesh(new T.ShapeGeometry(ts),M(0x06473d,{side:T.DoubleSide}));tail.position.set(-1.05,-.15,0);tail.rotation.z=-.25;body.add(tail);
+  // ذيل
+  const ts=new T.Shape();ts.moveTo(0,.14);ts.lineTo(-1.25,.42);ts.quadraticCurveTo(-1.4,0,-1.25,-.42);ts.lineTo(0,-.14);
+  const tail=new T.Mesh(new T.ShapeGeometry(ts),M(0x46512a,{side:T.DoubleSide}));tail.position.set(-1.2,-.05,0);tail.rotation.z=-.3;body.add(tail);
   const tail2=tail.clone();tail2.rotation.x=Math.PI/2;body.add(tail2);
 
-  // أجنحة
-  const ws=new T.Shape();ws.moveTo(-.18,0);ws.quadraticCurveTo(.55,1.3,.15,2.9);ws.quadraticCurveTo(-.35,1.6,-.5,0);
-  const wingGeo=new T.ShapeGeometry(ws,12);
+  // أقدام صغيرة تظهر عند الوقوف
+  const feet=new T.Group();body.add(feet);
+  [.18,-.18].forEach(z=>{const f=new T.Mesh(new T.CylinderGeometry(.03,.03,.32,6),footM);f.position.set(.15,-.62,z);f.rotation.z=.25;feet.add(f);});
+
+  // أجنحة شفافة مع أثر حركة (motion blur)
+  const ws=new T.Shape();ws.moveTo(-.16,0);ws.quadraticCurveTo(.5,1.4,.12,3.1);ws.quadraticCurveTo(-.32,1.7,-.46,0);
+  const wingGeo=new T.ShapeGeometry(ws,14);
   function makeWing(side){
-    const pivot=new T.Group();pivot.position.set(.15,.45,.32*side);
-    const flap=new T.Group();pivot.add(flap);
-    flap.add(new T.Mesh(wingGeo,wingM));
-    body.add(pivot);return {pivot,flap,side};
+    const pivot=new T.Group();pivot.position.set(.2,.36,.28*side);
+    const flaps=wingMats.map(m=>{const f=new T.Group();f.add(new T.Mesh(wingGeo,m));pivot.add(f);return f;});
+    body.add(pivot);return {pivot,flaps,side};
   }
   const wings=[makeWing(1),makeWing(-1)];
 
-  const S=Math.max(11,Math.min(15,W/30));
+  const S=Math.max(12,Math.min(16,W/27));
   bird.scale.set(S,S,S);
 
   // --- السلوك ---
@@ -569,11 +577,15 @@ stopBtn.addEventListener('click',()=>{
     const yawT=st.face>0?-.45:Math.PI+.45;
     st.yaw=lerp(st.yaw,yawT,Math.min(1,dt*7));
     st.phase+=dt*Math.PI*2*16;
-    const osc=.25+(1+Math.sin(st.phase))*1.05;
+    const oscAt=ph=>.25+(1+Math.sin(ph))*1.1;
     wings.forEach(w=>{
-      w.pivot.rotation.z=lerp(1.95,.35,st.blend);
-      w.flap.rotation.x=w.side*lerp(.35,osc,st.blend);
+      w.pivot.rotation.z=lerp(1.95,.4,st.blend);
+      w.flaps.forEach((f,k)=>{
+        f.rotation.x=w.side*lerp(.32,oscAt(st.phase-k*.55),st.blend);
+        if(k) f.visible=st.blend>.5;
+      });
     });
+    feet.visible=st.blend<.4;
     tail.rotation.z=-.25+Math.sin(now/260)*.08*st.blend;
     bird.position.set(st.x,-st.y,0);
     bird.rotation.y=st.yaw;
