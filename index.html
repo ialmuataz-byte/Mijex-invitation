@@ -209,6 +209,7 @@ body.still *, body.still *::before{animation:none!important}
 .snd.muted .on{display:none}.snd.muted .off{display:block}
 .snd:not(.muted)::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(230,200,154,.45);animation:sndPulse 2.4s ease-out infinite}
 @keyframes sndPulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.flap-word{position:absolute;left:0;right:0;top:64.2%;transform:translateY(-50%);text-align:center;font-family:"Readex Pro",sans-serif;font-weight:600;font-size:calc(36px*var(--k));line-height:1;color:#1d3f7a;letter-spacing:0;pointer-events:none;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 </style>
 </head>
 <body>
@@ -267,9 +268,9 @@ body.still *, body.still *::before{animation:none!important}
             <rect width="450" height="11" fill="url(#hAir)"/>
             <rect width="450" height="330" fill="#fff" filter="url(#hGrain)"/>
           </g>
-          <text x="225" y="212" text-anchor="middle" dominant-baseline="central" font-family="Readex Pro, sans-serif" font-weight="600" font-size="36" fill="#1d3f7a" letter-spacing="1">دعوة</text>
           <path d="M1 1L225 316L449 1" fill="none" stroke="#e8d9b8" stroke-width="1.6" stroke-linejoin="round"/>
         </svg>
+        <span class="flap-word" lang="ar" dir="rtl">دعوة</span>
       </div>
       <button class="gem-btn henv-seal" id="openBtn" type="button" aria-label="افتح الدعوة">
         <span class="gem-glow"></span>
